@@ -30,7 +30,7 @@ const listAllCats = () => {
 };
 
 const findCatById = (id) => {
-  return catItems.find((item) => item.cat_id === id);
+  return catItems.find((item) => Number(item.cat_id) === Number(id));
 };
 
 const addCat = (cat) => {

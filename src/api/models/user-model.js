@@ -1,6 +1,6 @@
 const userItems = [
   {
-    id: 3609,
+    user_id: 3609,
     name: 'John Doe',
     username: 'johndoe',
     email: 'john@metropolia.fi',
@@ -8,7 +8,7 @@ const userItems = [
     password: 'password',
   },
   {
-    id: 3610,
+    user_id: 3610,
     name: 'Jane Doe',
     username: 'janedoe',
     email: 'jane@metropolia.fi',
@@ -22,21 +22,21 @@ const listAllUsers = () => {
 };
 
 const findUserById = (id) => {
-  return userItems.find((item) => item.id === id);
+  return userItems.find((item) => Number(item.user_id) === Number(id));
 };
 
 const addUser = (user) => {
   const {name, username, email, role, password} = user;
-  const newId = userItems[0].id + 1;
+  const newId = userItems[0].user_id + 1;
   userItems.unshift({
-    id: newId,
+    user_id: newId,
     name,
     username,
     email,
     role,
     password,
   });
-  return {id: newId};
+  return {user_id: newId};
 };
 
 export {listAllUsers, findUserById, addUser};
