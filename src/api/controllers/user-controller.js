@@ -1,7 +1,12 @@
 import {addUser, findUserById, listAllUsers} from '../models/user-model.js';
 
 const getUser = (req, res) => {
-  res.json(listAllUsers());
+  const users = res.json(listAllUsers());
+  if (!users) {
+    res.status(404).send('No users found');
+    return;
+  }
+  res.json(users);
 };
 
 const getUserById = (req, res) => {
