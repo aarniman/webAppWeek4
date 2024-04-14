@@ -1,3 +1,5 @@
+import promisePool from "../../utils/database";
+
 const catItems = [
   {
     cat_id: 334,
@@ -25,28 +27,50 @@ const catItems = [
   },
 ];
 
-const listAllCats = () => {
-  return catItems;
+const listAllCats = async () => {
+  const [rows] = await promisePool.query('SELECT * FROM cats');
+  console.log('rows', rows);
+  return rows [0];
 };
 
-const findCatById = (id) => {
-  return catItems.find((item) => Number(item.cat_id) === Number(id));
+const findCatById = async (id) => {
+  const [rows] = await promisePool.execute('SELECT * FROM cats WHERE cat_id = ?', [id]);
+  console.log('rows', rows);
+  if (rows.length === 0) {
+    return false;
+  }
+  return rows[0];
 };
 
-const addCat = (cat) => {
-  // eslint-disable-next-line camelcase
+const addCat = async (cat) => {
   const {cat_name, weight, owner, filename, birthday} = cat;
-  const newId = catItems[0].cat_id + 1;
-  catItems.unshift({
-    cat_id: newId,
-    // eslint-disable-next-line camelcase
-    cat_name,
-    weight,
-    owner,
-    filename,
-    birthday,
-  });
-  return {cat_id: newId};
+  const sql = 'INSERT INTO cats (cat_name, weight, owner, filename, birthday) VALUES (?, ?, ?, ?, ?)';
+  const params = [cat_name, weight, owner, filename, birthday];
+    const rows = await promisePool.execute(sql, params);
+    console.log('rows', rows);
+    if (rows[0].affecredRows === 0){
+      return false;
+    }
+    return {message: 'success'};
 };
 
-export {listAllCats, findCatById, addCat};
+const modifyCat = async (cat) => {
+  const sql = promisePool.format('UPDATE cats SET ? WHERE cat_id = ?', [cat, id]);
+    const rows = await promisePool.execute(sql);
+    console.log('rows', rows);
+    if (rows[0].affectedRows === 0) {
+      return false;
+    }
+    return {message: 'success'};
+};
+
+const removeCat = async (id) => {
+  const [rows] = await promisePool.execute('DELETE FROM cats WHERE cat_id = ?', [id]);
+  console.log('rows', rows);
+  if (rows.affectedRows === 0) {
+    return false;
+  }
+  return {message: 'success'};
+};
+
+export {listAllCats, findCatById, addCat, modifyCat, removeCat};
